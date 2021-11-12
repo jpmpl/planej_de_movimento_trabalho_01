@@ -25,21 +25,20 @@ def init():
     vel_msg = Twist()
     
     if sys.version_info.major == 2:
-        cx, cy, a = raw_input('Digite o centro (x,y) e o parâmetro para curva de Dumbbell (a) ').split()
+        cx, cy, a = raw_input('Digite o centro (x,y) e o parâmetro para curva de Cornoid (a) ').split()
     elif sys.version_info.major == 3:
-        cx, cy, a = input('Digite o centro (x,y) e o parâmetro para curva de Dumbbell (a) ').split()
+        cx, cy, a = input('Digite o centro (x,y) e o parâmetro para curva de Cornoid (a) ').split()
     
     cx, cy, a = [float(i) for i in [cx, cy, a]]
-    t = -1
+    t = 0
     w = 0.4
 
-    while not rospy.is_shutdown() and (t+0.005)<1:
-        t += 0.005
-        xf = a*t+cx
-        sqrtval = sqrt(1-pow(t,2))
-        yf = a*(pow(t,2))*sqrtval+cy
-        Vx = k*(xf-x0)+a
-        Vy = k*(yf-y0)+2*a*t*sqrtval-a*pow(t,3)/sqrtval
+    while not rospy.is_shutdown():
+        t += 0.05
+        xf = a*cos(t)*(1-2*pow(sin(t),2))+cx
+        yf = a*sin(t)*(1+2*pow(cos(t),2))+cy
+        Vx = k*(xf-x0)-a*sin(t)*(1-2*pow(sin(t),2))-4*a*pow(cos(t),2)*sin(t)
+        Vy = k*(yf-y0)+a*cos(t)*(1+2*pow(cos(t),2))-4*a*pow(sin(t),2)*cos(t)
         vel_msg.linear.x = Vx
         vel_msg.linear.y = Vy
         #vel_msg.linear.x = cos(theta)*Vx+sin(theta)*Vy
