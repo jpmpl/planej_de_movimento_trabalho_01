@@ -13,8 +13,8 @@ path_pub = rospy.Publisher('/path', Path, queue_size=10)
 
 x0 = 0.0
 y0 = 0.0
-k = 5
-kd = 0.01
+k = 10
+#kd = 0.01
 d = 0.5
 path = Path()
 
@@ -43,7 +43,7 @@ def init():
     pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
     #rospy.Subscriber('/turtle1/pose', Pose, pose_callback)
     rospy.Subscriber('/odom', Odometry, odometry_callback)
-    rate = rospy.Rate(20)
+    rate = rospy.Rate(500)
     vel_msg = Twist()
     
     if sys.version_info.major == 2:
@@ -57,9 +57,9 @@ def init():
     while not rospy.is_shutdown():        
         xf = a*cos(t)*(1-2*pow(sin(t),2))+cx
         yf = a*sin(t)*(1+2*pow(cos(t),2))+cy
-        Vx = k*(xf-x0)-kd*a*sin(t)*(1-2*pow(sin(t),2)+4*pow(cos(t),2))
-        Vy = k*(yf-y0)+kd*a*cos(t)*(1+2*pow(cos(t),2)-4*pow(sin(t),2))
-        t += 0.001
+        Vx = k*(xf-x0)-a*sin(t)*(1-2*pow(sin(t),2)+4*pow(cos(t),2))
+        Vy = k*(yf-y0)+a*cos(t)*(1+2*pow(cos(t),2)-4*pow(sin(t),2))
+        t += 0.002
 
         #vel_msg.linear.x = Vx
         #vel_msg.linear.y = Vy
