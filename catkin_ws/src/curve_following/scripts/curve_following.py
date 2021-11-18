@@ -2,12 +2,12 @@
 
 import sys
 import rospy
-from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Twist, PoseStamped
 from sensor_msgs.msg import *
 from nav_msgs.msg import *
 #from turtlesim.msg import Pose
 from math import *
-from geometry_msgs.msg import PoseStamped
+from tf.transformations import euler_from_quaternion
 
 path_pub = rospy.Publisher('/path', Path, queue_size=10)
 
@@ -26,7 +26,8 @@ path = Path()
 
 def odometry_callback(data):
     global x0, y0, theta, k, d, path
-    theta = 2*asin(data.pose.pose.orientation.z)
+    orient = data.pose.pose.orientation
+    (roll, pitch, theta) = euler_from_quaternion([orient.x, orient.y, orient.z, orient.w])
     x0 = data.pose.pose.position.x + d * cos(theta)
     y0 = data.pose.pose.position.y + d * sin(theta)
 
