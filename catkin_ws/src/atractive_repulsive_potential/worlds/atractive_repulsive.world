@@ -40,7 +40,7 @@ define erratic position
     size [ 1.000 1.000 0.250 ]
     origin [ -0.050 0.000 0.000 0.000 ]
     gui_noise 1
-    drive "omni"
+    drive "diff"
     topurg
     (
         pose [ 0.050 0.000 0.000 0.000 ]

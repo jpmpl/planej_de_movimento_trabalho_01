@@ -98,10 +98,14 @@ def init():
             print("Repulsive pot: {}".format(d_rep_pot))
             if np.linalg.norm(d_pot) > ep:
                 V = - alp*(d_pot)
-                vel_msg.linear.x = V[0]
-                vel_msg.linear.y = V[1]
-                #vel_msg.linear.x = cos(theta)*V[0]+sin(theta)*V[1]
-                #vel_msg.angular.z = (-sin(theta)*V[0]+cos(theta)*V[1])/d
+                
+                # Omnidirectional robot
+                #vel_msg.linear.x = V[0]
+                #vel_msg.linear.y = V[1]
+                
+                # Diff robot
+                vel_msg.linear.x = cos(theta)*V[0]+sin(theta)*V[1]
+                vel_msg.angular.z = (-sin(theta)*V[0]+cos(theta)*V[1])/d
                 i += 1
                 rate.sleep()
                 pub.publish(vel_msg)
