@@ -9,7 +9,8 @@ from nav_msgs.msg import *
 from math import *
 from tf.transformations import euler_from_quaternion
 import numpy as np
-from scipy.signal import argrelextrema
+from scipy.signal import argrelextrema, find_peaks, peak_prominences
+import matplotlib.pyplot as plt
 
 q0 = None
 qf = None
@@ -53,15 +54,18 @@ def attraction_potential(qf):
     return pot, d_pot
 
 def repulsive_potential():
-    di_threshold = 5
+    di_threshold = 7.5
     b = 100
     d_pot = np.array([[0.0], [0.0]])
-    lrange_local_mins = argrelextrema(lrange, np.less)
+    #lrange_local_mins = argrelextrema(lrange, np.less, order=20)
+    lrange_local_mins = find_peaks(-lrange, height=(-di_threshold, 0), distance=20, prominence=1.0)
     lrange_local_mins = lrange_local_mins[0]
     if lrange_local_mins.size > 0:
         for phi in np.nditer(lrange_local_mins):
-            di = np.array([[-sin(angle_min+phi*angle_increment)], [-cos(angle_min+phi*angle_increment)]])
+            di = np.array([[cos(theta+angle_min+phi*angle_increment-pi)], [sin(theta+angle_min+phi*angle_increment-pi)]])
             d_pot += b*(1/di_threshold - 1/lrange[phi])*1/pow(lrange[phi],2)*di
+        if d_pot[0] > 0 and d_pot[1] < 0:
+            print("AQUI")
         return d_pot
     return d_pot
 
@@ -84,7 +88,7 @@ def init():
     
     ep = 0.005
     i = 0
-    alp = 0.001
+    alp = 0.005
     while not rospy.is_shutdown():
         if q0 is not None and qf is not None and theta is not None and lrange is not None:
             if i == 0:
@@ -96,8 +100,10 @@ def init():
             print("Repulsive pot: {}".format(d_rep_pot))
             if np.linalg.norm(d_pot) > ep:
                 V = - alp*(d_pot)
-                vel_msg.linear.x = cos(theta)*V[0]+sin(theta)*V[1]
-                vel_msg.angular.z = (-sin(theta)*V[0]+cos(theta)*V[1])/d
+                vel_msg.linear.x = V[0]
+                vel_msg.linear.y = V[1]
+                #vel_msg.linear.x = cos(theta)*V[0]+sin(theta)*V[1]
+                #vel_msg.angular.z = (-sin(theta)*V[0]+cos(theta)*V[1])/d
                 i += 1
                 rate.sleep()
                 pub.publish(vel_msg)

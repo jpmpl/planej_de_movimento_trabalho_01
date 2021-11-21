@@ -40,7 +40,7 @@ define erratic position
     size [ 1.000 1.000 0.250 ]
     origin [ -0.050 0.000 0.000 0.000 ]
     gui_noise 1
-    drive "diff"
+    drive "omni"
     topurg
     (
         pose [ 0.050 0.000 0.000 0.000 ]
@@ -79,13 +79,13 @@ floorplan
 ( 
   size [60.000 60.000 0.500]
   pose [0 0 0 0]
-  bitmap "cave_filled.png"
+  bitmap "circles.png"
 )
 
 erratic
 (
     #pose [ -20.000 -20.000 0.000 -120.000 ]
-    pose [ -20.000 -20.000 0.000 -120.000 ]
+    pose [ -20.000 -20.000 0.000 0.000 ]
     name "myrobot"
     color "blue"
 )
