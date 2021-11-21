@@ -64,8 +64,6 @@ def repulsive_potential():
         for phi in np.nditer(lrange_local_mins):
             di = np.array([[cos(theta+angle_min+phi*angle_increment-pi)], [sin(theta+angle_min+phi*angle_increment-pi)]])
             d_pot += b*(1/di_threshold - 1/lrange[phi])*1/pow(lrange[phi],2)*di
-        if d_pot[0] > 0 and d_pot[1] < 0:
-            print("AQUI")
         return d_pot
     return d_pot
 
