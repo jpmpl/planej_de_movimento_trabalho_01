@@ -41,17 +41,15 @@ def odometry_callback_goal(data):
     qf = np.array([[xf], [yf]])
  """
 
-def attraction_potential(qf):
+def attraction_potential(qgoal):
     di_threshold = 10
     a = 5
-    di = np.linalg.norm(q0-qf)
+    di = np.linalg.norm(q0-qgoal)
     if di <= di_threshold:
-        pot = 0.5*a*pow(di,2)
-        d_pot = a*(q0-qf)
+        d_pot = a*(q0-qgoal)
     else:
-        pot = di_threshold*a*di - 0.5*a*pow(di_threshold,2)
-        d_pot = di_threshold*a*(q0-qf)/di    
-    return pot, d_pot
+        d_pot = di_threshold*a*(q0-qgoal)/di    
+    return d_pot
 
 def repulsive_potential():
     di_threshold = 7.5
@@ -61,9 +59,9 @@ def repulsive_potential():
     lrange_local_mins = find_peaks(-lrange, height=(-di_threshold, 0), distance=20, prominence=1.0)
     lrange_local_mins = lrange_local_mins[0]
     if lrange_local_mins.size > 0:
-        for phi in np.nditer(lrange_local_mins):
-            di = np.array([[cos(theta+angle_min+phi*angle_increment-pi)], [sin(theta+angle_min+phi*angle_increment-pi)]])
-            d_pot += b*(1/di_threshold - 1/lrange[phi])*1/pow(lrange[phi],2)*di
+        for idx in np.nditer(lrange_local_mins):
+            di = np.array([[cos(theta+angle_min+idx*angle_increment-pi)], [sin(theta+angle_min+idx*angle_increment-pi)]])
+            d_pot += b*(1/di_threshold - 1/lrange[idx])*1/pow(lrange[idx],2)*di
         return d_pot
     return d_pot
 
@@ -91,7 +89,7 @@ def init():
         if q0 is not None and qf is not None and theta is not None and lrange is not None:
             if i == 0:
                 q = q0
-            pot, d_atr_pot = attraction_potential(qf)
+            d_atr_pot = attraction_potential(qf)
             d_rep_pot = repulsive_potential()
             d_pot = d_atr_pot+d_rep_pot
             print("Atractive pot: {}".format(d_atr_pot))
@@ -106,6 +104,7 @@ def init():
                 # Diff robot
                 vel_msg.linear.x = cos(theta)*V[0]+sin(theta)*V[1]
                 vel_msg.angular.z = (-sin(theta)*V[0]+cos(theta)*V[1])/d
+
                 i += 1
                 rate.sleep()
                 pub.publish(vel_msg)
