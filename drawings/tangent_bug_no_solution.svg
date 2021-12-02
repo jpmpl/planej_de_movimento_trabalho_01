@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg900"
+   inkscape:version="1.1.1 (1:1.1+202109281949+c3084ef5ed)"
+   sodipodi:docname="tangent_bug_no_solution.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview902"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="8.5065501"
+     inkscape:cx="279.60806"
+     inkscape:cy="303.0018"
+     inkscape:window-width="1848"
+     inkscape:window-height="1016"
+     inkscape:window-x="72"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs897" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583;stroke-opacity:1"
+       id="rect2191"
+       width="14.552083"
+       height="14.552083"
+       x="65.918274"
+       y="70.84481"
+       inkscape:export-filename="/home/jpmpl/jpmpl/FormalStudies/UFMG/Masters/Semester2/PlanejamentoDeMovimentos/Trabalho1/planej_de_movimento_trabalho_01/catkin_ws/src/tangent_bug/worlds/tangentbug_world2.png"
+       inkscape:export-xdpi="2000"
+       inkscape:export-ydpi="2000" />
+    <path
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.314;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 67.855088,77.026834 c 0,-3.325013 3.986215,-5.541701 6.643709,-3.325013 4.309783,4.421819 3.986216,6.650027 3.986216,7.758351 -1.328773,4.433379 -8.96729,-1.403689 -10.629925,-4.433338 z"
+       id="path4995"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/home/jpmpl/jpmpl/FormalStudies/UFMG/Masters/Semester2/PlanejamentoDeMovimentos/Trabalho1/planej_de_movimento_trabalho_01/catkin_ws/src/tangent_bug/worlds/tangentbug_world2.png"
+       inkscape:export-xdpi="2000"
+       inkscape:export-ydpi="2000" />
+  </g>
+</svg>

@@ -8,6 +8,7 @@ from nav_msgs.msg import *
 #from turtlesim.msg import Pose
 from math import *
 from tf.transformations import euler_from_quaternion
+import csv
 
 path_pub = rospy.Publisher('/path', Path, queue_size=10)
 
@@ -54,20 +55,30 @@ def init():
     
     cx, cy, a = [float(i) for i in [cx, cy, a]]
     t = 0
+    
+    with open('data_cf_0_0_10.csv','w', newline='') as csvfile:
+        fieldnames = ['time','t','x','y','theta','Vx','Vy','Vlin','Vang']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        
+        while not rospy.is_shutdown():        
+            xf = a*cos(t)*(1-2*pow(sin(t),2))+cx
+            yf = a*sin(t)*(1+2*pow(cos(t),2))+cy
+            Vx = k*(xf-x0)-a*sin(t)*(1-2*pow(sin(t),2)+4*pow(cos(t),2))
+            Vy = k*(yf-y0)+a*cos(t)*(1+2*pow(cos(t),2)-4*pow(sin(t),2))
+            t += 0.002
 
-    while not rospy.is_shutdown():        
-        xf = a*cos(t)*(1-2*pow(sin(t),2))+cx
-        yf = a*sin(t)*(1+2*pow(cos(t),2))+cy
-        Vx = k*(xf-x0)-a*sin(t)*(1-2*pow(sin(t),2)+4*pow(cos(t),2))
-        Vy = k*(yf-y0)+a*cos(t)*(1+2*pow(cos(t),2)-4*pow(sin(t),2))
-        t += 0.002
+            #vel_msg.linear.x = Vx
+            #vel_msg.linear.y = Vy
+            vel_msg.linear.x = cos(theta)*Vx+sin(theta)*Vy
+            vel_msg.angular.z = (-sin(theta)*Vx+cos(theta)*Vy)/d
 
-        #vel_msg.linear.x = Vx
-        #vel_msg.linear.y = Vy
-        vel_msg.linear.x = cos(theta)*Vx+sin(theta)*Vy
-        vel_msg.angular.z = (-sin(theta)*Vx+cos(theta)*Vy)/d
-        rate.sleep()
-        pub.publish(vel_msg)
+            writer.writerow({'time':rospy.Time.now(),'t':t,'x':x0,'y':y0,\
+                    'theta':theta,'Vx':Vx,'Vy':Vy,'Vlin':vel_msg.linear.x,\
+                    'Vang':vel_msg.angular.z})
+
+            rate.sleep()
+            pub.publish(vel_msg)
     
 if __name__ == '__main__':
     try:

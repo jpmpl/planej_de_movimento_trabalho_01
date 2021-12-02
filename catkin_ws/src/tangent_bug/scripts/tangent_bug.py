@@ -3,7 +3,6 @@
 from operator import is_not
 import sys
 import threading
-
 from numpy.core.numeric import count_nonzero
 import rospy
 from geometry_msgs.msg import Twist, Point, PoseStamped
@@ -14,6 +13,7 @@ from tf.transformations import euler_from_quaternion
 import numpy as np
 from scipy.signal import argrelextrema, find_peaks, peak_prominences
 import matplotlib.pyplot as plt
+import csv
 
 q0 = None
 q0_lck = threading.Lock()
@@ -39,6 +39,7 @@ q_Oi_obstacle_prev = None
 
 motion_to_goal_control = True
 boundary_following_control = False
+met_threshold = False
 
 def ccw(A,B,C):
     return (C[1]-A[1]) * (B[0]-A[0]) > (B[1]-A[1]) * (C[0]-A[0])
@@ -170,7 +171,7 @@ def motion_to_goal(qf, alp, k):
     return (-alp*attraction_potential(qf_cur), is_normal)
 
 def boundary_following(qf, V_prev, k):
-    global qf_prv, d_follow, motion_to_goal_control, boundary_following_control, q_Oi_obstacle_prev
+    global qf_prv, d_follow, motion_to_goal_control, boundary_following_control, q_Oi_obstacle_prev, met_threshold
     lrange_cpy = lrange
     q0_cpy = q0
     theta_cpy = theta
@@ -222,6 +223,7 @@ def boundary_following(qf, V_prev, k):
         d_follow = None
         motion_to_goal_control = True
         boundary_following_control = False
+        met_threshold = False
         return (None, is_normal)
     else:
         if d_follow_aux is not None:
@@ -229,7 +231,8 @@ def boundary_following(qf, V_prev, k):
     
     idx_local_min = rng[np.argmin(lrange_cpy[rng])]
     normal = -np.array([cos(theta_cpy+angle_min+idx_local_min*angle_increment), sin(theta+angle_min+idx_local_min*angle_increment)])
-    if lrange_cpy[idx_local_min] >= 0:
+    #if (not met_threshold and lrange_cpy[idx_local_min] > 0) or (met_threshold and lrange_cpy[idx_local_min] >= -0.1 and lrange_cpy[idx_local_min] <= 0.1):
+    if lrange_cpy[idx_local_min] >= -0.1 and lrange_cpy[idx_local_min] <= 0.1:
         tangent0 = np.array([-normal[1],normal[0]]) # 90º
         phi0 = np.arccos(np.dot(tangent0,V_prev)/(np.linalg.norm(tangent0)+np.linalg.norm(V_prev)))
         tangent1 = np.array([normal[1],-normal[0]]) # -90º
@@ -240,8 +243,12 @@ def boundary_following(qf, V_prev, k):
             tangent = tangent1
         return (k*tangent, is_normal)
     else:
+        met_threshold = True
         is_normal = True
-        return (k*normal, is_normal)
+        if lrange_cpy[idx_local_min] < -0.1:
+            return (k*normal, is_normal)
+        if lrange_cpy[idx_local_min] > 0.1:
+            return (-k*normal, is_normal)
 
 def init():
     rospy.init_node('curve_following', anonymous=True)
@@ -259,40 +266,71 @@ def init():
     qfx, qfy = [float(i) for i in [qfx, qfy]]
     qf = np.array([qfx,qfy])
 
+    q0_hist = []
     V_prev = None
-    alp = 0.01
-    k = 1
+    alp = 0.02
+    k = 0.5
     is_normal = False
-    while not rospy.is_shutdown():
-        if q0 is not None and qf is not None and theta is not None and lrange is not None:
-            if motion_to_goal_control:
-                (V, is_normal) = motion_to_goal(qf,alp,k)
+    e_arrival = 0.01
+    e_nosolution = 0.1
+    no_solution = False
+    arrived = False
+
+    with open('data_tb_test.csv','w', newline='') as csvfile:
+        fieldnames = ['time','x','y','theta','Vx','Vy','Vlin','Vang',\
+            'isMotionToGoal','isBoundaryFollowing','isNormal']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+
+        while not rospy.is_shutdown() and not no_solution and not arrived:
+            if q0 is not None and qf is not None and theta is not None and lrange is not None:
+                if motion_to_goal_control:
+                    (V, is_normal) = motion_to_goal(qf,alp,k)
+                    if not is_normal:
+                        print("Motion to goal")
+                    else:
+                        print("Normal motion")
+                if boundary_following_control:
+                    (V, is_normal) = boundary_following(qf,V_prev,k)
+                    if V is None:
+                        continue
+                    if not is_normal:
+                        print("Boundary following")
+                    else:
+                        print("Normal motion")
+
+                # Omnidirectional robot
+                #vel_msg.linear.x = V[0]
+                #vel_msg.linear.y = V[1]
+
+                # Diff robot
+                vel_msg.linear.x = cos(theta)*V[0]+sin(theta)*V[1]
+                vel_msg.angular.z = (-sin(theta)*V[0]+cos(theta)*V[1])/d
+                
                 if not is_normal:
-                    print("Motion to goal")
-                else:
-                    print("Normal motion")
-            if boundary_following_control:
-                (V, is_normal) = boundary_following(qf,V_prev,k)
-                if V is None:
-                    continue
-                if not is_normal:
-                    print("Boundary following")
-                else:
-                    print("Normal motion")
+                    V_prev = V
+                
+                writer.writerow({'time':rospy.Time.now(),'x':q0[0],'y':q0[1],\
+                    'theta':theta,'Vx':V[0],'Vy':V[1],'Vlin':vel_msg.linear.x,\
+                    'Vang':vel_msg.angular.z, 'isMotionToGoal':motion_to_goal_control,\
+                    'isBoundaryFollowing': boundary_following_control,'isNormal': is_normal})
 
-            # Omnidirectional robot
-            #vel_msg.linear.x = V[0]
-            #vel_msg.linear.y = V[1]
+                rate.sleep()
+                pub.publish(vel_msg)
 
-            # Diff robot
-            vel_msg.linear.x = cos(theta)*V[0]+sin(theta)*V[1]
-            vel_msg.angular.z = (-sin(theta)*V[0]+cos(theta)*V[1])/d
-            
-            if not is_normal:
-                V_prev = V
-
-            rate.sleep()
-            pub.publish(vel_msg)
+                no_solution_vec = [np.linalg.norm(q0_h-q0) for q0_h in q0_hist]
+                if len(no_solution_vec) > 0:
+                    minval = min(no_solution_vec)
+                    minpos = np.argmin(no_solution_vec)
+                    if minval <= e_nosolution and len(q0_hist)-minpos >= 50:
+                        print("No solution")
+                        no_solution = True
+                if len(q0_hist)==0 or (len(q0_hist) > 0 and not np.array_equal(q0, q0_hist[-1])):
+                    q0_hist.append(q0)
+                if np.linalg.norm(qf-q0) <= e_arrival:
+                    print("Arrived")
+                    arrived = True
+    print("Finished")
 
 if __name__ == '__main__':
     try:

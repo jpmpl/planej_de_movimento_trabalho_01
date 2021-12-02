@@ -13,13 +13,13 @@ define floorplan model
   gui_outline 0
   gripper_return 0
   fiducial_return 0
-  laser_return 1
+  #laser_return 1
 )
 
 define block model
 (
     size [0.500 0.500 0.500]
-    gui_noise 0
+    #gui_noise 0
 )
 
 define topurg ranger
@@ -37,9 +37,10 @@ define topurg ranger
 
 define erratic position
 (
-    size [ 0.550 0.550 0.250 ]
+    #size [ 0.550 0.550 0.250 ]
+    size [ 1.000 1.000 0.250 ]
     origin [ -0.050 0.000 0.000 0.000 ]
-    gui_noise 1
+    #gui_noise 1
     drive "diff"
     topurg
     (
@@ -64,12 +65,12 @@ window
     show_follow 1
     show_footprints 1
     show_grid 1
-    show_status 1
+    #show_status 1
     show_trailarrows 0
     show_trailrise 0
     show_trailfast 0
     show_occupancy 0
-    show_tree 0
+    #show_tree 0
     pcam_on 0
     screenshots 0
 )
@@ -77,7 +78,7 @@ window
 # load an environment bitmap
 floorplan
 ( 
-  name "cave"
+  name "tangentbug_world"
   size [60.000 60.000 0.500]
   pose [0 0 0 0]
   bitmap "tangentbug_world2.png"
@@ -86,6 +87,7 @@ floorplan
 erratic
 (
     pose [ -27.000 2.000 0.000 0.000 ]
+    #pose [ -5.000 2.000 0.000 0.000 ]
     name "myrobot"
     color "blue"
 )

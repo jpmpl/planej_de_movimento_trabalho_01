@@ -22,16 +22,17 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:document-units="mm"
-     showgrid="true"
+     showgrid="false"
      inkscape:zoom="12.030079"
-     inkscape:cx="426.59738"
-     inkscape:cy="453.15581"
+     inkscape:cx="426.80518"
+     inkscape:cy="453.40517"
      inkscape:window-width="1848"
      inkscape:window-height="1016"
      inkscape:window-x="72"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1">
+     inkscape:current-layer="layer1"
+     showguides="false">
     <inkscape:grid
        type="xygrid"
        id="grid2167" />
@@ -48,26 +49,41 @@
        width="14.552083"
        height="14.552083"
        x="106.09792"
-       y="111.65417" />
+       y="111.65417"
+       inkscape:export-filename="/home/jpmpl/jpmpl/FormalStudies/UFMG/Masters/Semester2/PlanejamentoDeMovimentos/Trabalho1/planej_de_movimento_trabalho_01/catkin_ws/src/tangent_bug/worlds/tangentbug_world2.png"
+       inkscape:export-xdpi="2000"
+       inkscape:export-ydpi="2000" />
     <path
        style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 108.47917,119.32708 c -0.32859,0.179 -0.61521,-0.28399 -0.89499,-1.64293 -0.1042,-0.58238 0.65717,-0.358 0.83617,-0.0294 0.38641,0.69493 0.35016,1.23144 0.0588,1.67234 z"
        id="path2248"
-       sodipodi:nodetypes="cccc" />
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/home/jpmpl/jpmpl/FormalStudies/UFMG/Masters/Semester2/PlanejamentoDeMovimentos/Trabalho1/planej_de_movimento_trabalho_01/catkin_ws/src/tangent_bug/worlds/tangentbug_world2.png"
+       inkscape:export-xdpi="2000"
+       inkscape:export-ydpi="2000" />
     <path
        style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 110.33125,119.0625 c 0,-0.79375 0.79375,-1.32292 1.32292,-0.79375 0.85818,1.05558 0.79375,1.5875 0.79375,1.85208 -0.26459,1.05834 -1.7856,-0.33509 -2.11667,-1.05833 z"
        id="path4995"
-       sodipodi:nodetypes="cccc" />
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/home/jpmpl/jpmpl/FormalStudies/UFMG/Masters/Semester2/PlanejamentoDeMovimentos/Trabalho1/planej_de_movimento_trabalho_01/catkin_ws/src/tangent_bug/worlds/tangentbug_world2.png"
+       inkscape:export-xdpi="2000"
+       inkscape:export-ydpi="2000" />
     <path
        style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 113.50625,122.2375 c 2.64583,-1.05833 1.32292,-4.23333 0.52917,-5.29167 0,-0.52916 2.11666,1.32292 2.11666,4.49792 0,0.79375 -2.91041,1.05833 -2.64583,0.79375 z"
+       d="m 113.22231,122.30105 c 2.64583,-1.05833 1.32292,-4.23333 0.52917,-5.29167 0,-0.52916 2.11666,1.32292 2.11666,4.49792 0,0.79375 -2.91041,1.05833 -2.64583,0.79375 z"
        id="path6002"
-       sodipodi:nodetypes="cccc" />
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/home/jpmpl/jpmpl/FormalStudies/UFMG/Masters/Semester2/PlanejamentoDeMovimentos/Trabalho1/planej_de_movimento_trabalho_01/catkin_ws/src/tangent_bug/worlds/tangentbug_world2.png"
+       inkscape:export-xdpi="2000"
+       inkscape:export-ydpi="2000" />
     <path
        style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 116.68125,118.79792 c -0.26458,0 1.58751,0.79375 2.11667,0.79375 0.26459,-0.26459 0.26458,-2.38125 0,-2.11667 0.15233,1.128 -0.52917,1.85209 -2.11667,1.32292 z"
+       d="m 116.79612,118.7567 c -0.26458,0 1.58751,0.79375 2.11667,0.79375 0.26459,-0.26459 0.26458,-2.38125 0,-2.11667 0.15233,1.128 -0.52917,1.85209 -2.11667,1.32292 z"
        id="path7408"
-       sodipodi:nodetypes="cccc" />
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/home/jpmpl/jpmpl/FormalStudies/UFMG/Masters/Semester2/PlanejamentoDeMovimentos/Trabalho1/planej_de_movimento_trabalho_01/catkin_ws/src/tangent_bug/worlds/tangentbug_world2.png"
+       inkscape:export-xdpi="2000"
+       inkscape:export-ydpi="2000" />
   </g>
 </svg>

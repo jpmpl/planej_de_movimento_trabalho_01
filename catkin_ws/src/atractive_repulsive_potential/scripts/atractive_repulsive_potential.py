@@ -11,6 +11,7 @@ from tf.transformations import euler_from_quaternion
 import numpy as np
 from scipy.signal import argrelextrema, find_peaks, peak_prominences
 import matplotlib.pyplot as plt
+import csv
 
 q0 = None
 qf = None
@@ -25,7 +26,7 @@ def odometry_callback_robot(data):
     (roll, pitch, theta) = euler_from_quaternion([orient.x, orient.y, orient.z, orient.w])
     x0 = data.pose.pose.position.x + d * cos(theta)
     y0 = data.pose.pose.position.y + d * sin(theta)
-    q0 = np.array([[x0], [y0]])
+    q0 = np.array([x0, y0])
 
 def range_callback_robot(data):
     global lrange, angle_min, angle_increment
@@ -38,7 +39,7 @@ def odometry_callback_goal(data):
     global qf
     xf = data.pose.pose.position.x
     yf = data.pose.pose.position.y
-    qf = np.array([[xf], [yf]])
+    qf = np.array([xf, yf])
  """
 
 def attraction_potential(qgoal):
@@ -53,14 +54,14 @@ def attraction_potential(qgoal):
 
 def repulsive_potential():
     di_threshold = 7.5
-    b = 100
-    d_pot = np.array([[0.0], [0.0]])
+    b = 1000
+    d_pot = np.array([0.0, 0.0])
     #lrange_local_mins = argrelextrema(lrange, np.less, order=20)
     lrange_local_mins = find_peaks(-lrange, height=(-di_threshold, 0), distance=20, prominence=1.0)
     lrange_local_mins = lrange_local_mins[0]
     if lrange_local_mins.size > 0:
         for idx in np.nditer(lrange_local_mins):
-            di = np.array([[cos(theta+angle_min+idx*angle_increment-pi)], [sin(theta+angle_min+idx*angle_increment-pi)]])
+            di = np.array([cos(theta+angle_min+idx*angle_increment-pi), sin(theta+angle_min+idx*angle_increment-pi)])
             d_pot += b*(1/di_threshold - 1/lrange[idx])*1/pow(lrange[idx],2)*di
         return d_pot
     return d_pot
@@ -80,34 +81,45 @@ def init():
         qfx, qfy = input('Digite as coordenadas do alvo (x,y): ').split()
     
     qfx, qfy = [float(i) for i in [qfx, qfy]]
-    qf = np.array([[qfx],[qfy]])
+    qf = np.array([qfx,qfy])
     
     ep = 0.005
     i = 0
     alp = 0.005
-    while not rospy.is_shutdown():
-        if q0 is not None and qf is not None and theta is not None and lrange is not None:
-            if i == 0:
-                q = q0
-            d_atr_pot = attraction_potential(qf)
-            d_rep_pot = repulsive_potential()
-            d_pot = d_atr_pot+d_rep_pot
-            print("Atractive pot: {}".format(d_atr_pot))
-            print("Repulsive pot: {}".format(d_rep_pot))
-            if np.linalg.norm(d_pot) > ep:
-                V = - alp*(d_pot)
-                
-                # Omnidirectional robot
-                #vel_msg.linear.x = V[0]
-                #vel_msg.linear.y = V[1]
-                
-                # Diff robot
-                vel_msg.linear.x = cos(theta)*V[0]+sin(theta)*V[1]
-                vel_msg.angular.z = (-sin(theta)*V[0]+cos(theta)*V[1])/d
+    
+    with open('data_ar_20_15_local_min.csv','w', newline='') as csvfile:
+        fieldnames = ['time','x','y','theta','Vx','Vy','Vlin','Vang','grad_atr_pot','grad_rep_pot']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
 
-                i += 1
-                rate.sleep()
-                pub.publish(vel_msg)
+        while not rospy.is_shutdown():
+            if q0 is not None and qf is not None and theta is not None and lrange is not None:
+                if i == 0:
+                    q = q0
+                d_atr_pot = attraction_potential(qf)
+                d_rep_pot = repulsive_potential()
+                d_pot = d_atr_pot+d_rep_pot
+                print("Atractive pot: {}".format(d_atr_pot))
+                print("Repulsive pot: {}".format(d_rep_pot))
+                if np.linalg.norm(d_pot) > ep:
+                    V = - alp*(d_pot)
+                    
+                    # Omnidirectional robot
+                    #vel_msg.linear.x = V[0]
+                    #vel_msg.linear.y = V[1]
+                    
+                    # Diff robot
+                    vel_msg.linear.x = cos(theta)*V[0]+sin(theta)*V[1]
+                    vel_msg.angular.z = (-sin(theta)*V[0]+cos(theta)*V[1])/d
+
+                    i += 1
+
+                    writer.writerow({'time':rospy.Time.now(),'x':q0[0],'y':q0[1],\
+                        'theta':theta,'Vx':V[0],'Vy':V[1],'Vlin':vel_msg.linear.x,\
+                        'Vang':vel_msg.angular.z})
+
+                    rate.sleep()
+                    pub.publish(vel_msg)
     
 if __name__ == '__main__':
     try:
