@@ -81,13 +81,13 @@ floorplan
   name "tangentbug_world"
   size [60.000 60.000 0.500]
   pose [0 0 0 0]
-  bitmap "tangentbug_world1.png"
+  bitmap "tangentbug_world2.png"
 )
 
 erratic
 (
-    pose [ -27.000 2.000 0.000 0.000 ]
-    #pose [ -5.000 2.000 0.000 0.000 ]
+    #pose [ -27.000 2.000 0.000 0.000 ]
+    pose [ -5.000 2.000 0.000 0.000 ]
     name "myrobot"
     color "blue"
 )

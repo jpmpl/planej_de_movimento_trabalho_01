@@ -77,7 +77,7 @@ def init():
     qfx, qfy = [float(i) for i in [qfx, qfy]]
     qf = np.array([qfx,qfy])
 
-    img = cv.imread("/home/jpmpl/jpmpl/FormalStudies/UFMG/Masters/Semester2/PlanejamentoDeMovimentos/Trabalho1/planej_de_movimento_trabalho_01/catkin_ws/src/wave_front/worlds/circles.png")
+    img = cv.imread("./catkin_ws/src/wave_front/worlds/circles.png")
     width = img.shape[0]
     height = img.shape[1]
     GRID_SIZE = 50
