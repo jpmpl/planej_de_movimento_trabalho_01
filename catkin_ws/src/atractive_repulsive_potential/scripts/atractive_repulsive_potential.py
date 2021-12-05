@@ -54,7 +54,7 @@ def attraction_potential(qgoal):
 
 def repulsive_potential():
     di_threshold = 7.5
-    b = 1000
+    b = 100
     d_pot = np.array([0.0, 0.0])
     #lrange_local_mins = argrelextrema(lrange, np.less, order=20)
     lrange_local_mins = find_peaks(-lrange, height=(-di_threshold, 0), distance=20, prominence=1.0)
@@ -87,8 +87,8 @@ def init():
     i = 0
     alp = 0.005
     
-    with open('data_ar_20_15_local_min.csv','w', newline='') as csvfile:
-        fieldnames = ['time','x','y','theta','Vx','Vy','Vlin','Vang','grad_atr_pot','grad_rep_pot']
+    with open('data_ar_20_15.csv','w', newline='') as csvfile:
+        fieldnames = ['time','x','y','theta','Vx','Vy','Vlin','Vang','grad_atr_pot_x','grad_atr_pot_y','grad_rep_pot_x','grad_rep_pot_y']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
 
@@ -116,7 +116,9 @@ def init():
 
                     writer.writerow({'time':rospy.Time.now(),'x':q0[0],'y':q0[1],\
                         'theta':theta,'Vx':V[0],'Vy':V[1],'Vlin':vel_msg.linear.x,\
-                        'Vang':vel_msg.angular.z})
+                        'Vang':vel_msg.angular.z,'grad_atr_pot_x':d_atr_pot[0],\
+                        'grad_atr_pot_y':d_atr_pot[1],'grad_rep_pot_x':d_rep_pot[0],\
+                        'grad_rep_pot_y':d_rep_pot[1]})
 
                     rate.sleep()
                     pub.publish(vel_msg)

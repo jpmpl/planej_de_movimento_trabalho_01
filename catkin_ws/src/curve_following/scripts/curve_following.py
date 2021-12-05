@@ -14,8 +14,8 @@ path_pub = rospy.Publisher('/path', Path, queue_size=10)
 
 x0 = 0.0
 y0 = 0.0
-k = 10
-#kd = 0.01
+k = 10 # k=0.5
+kd = 1 #kd = 0.1
 d = 0.5
 path = Path()
 
@@ -26,7 +26,7 @@ path = Path()
 #    theta = data.theta
 
 def odometry_callback(data):
-    global x0, y0, theta, k, d, path
+    global x0, y0, theta, k, kd, d, path
     orient = data.pose.pose.orientation
     (roll, pitch, theta) = euler_from_quaternion([orient.x, orient.y, orient.z, orient.w])
     x0 = data.pose.pose.position.x + d * cos(theta)
@@ -56,7 +56,7 @@ def init():
     cx, cy, a = [float(i) for i in [cx, cy, a]]
     t = 0
     
-    with open('data_cf_0_0_10.csv','w', newline='') as csvfile:
+    with open('data_cf_{}_{}_{}_{}_{}.csv'.format(cx, cy, a, k, kd),'w', newline='') as csvfile:
         fieldnames = ['time','t','x','y','theta','Vx','Vy','Vlin','Vang']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
@@ -64,8 +64,8 @@ def init():
         while not rospy.is_shutdown():        
             xf = a*cos(t)*(1-2*pow(sin(t),2))+cx
             yf = a*sin(t)*(1+2*pow(cos(t),2))+cy
-            Vx = k*(xf-x0)-a*sin(t)*(1-2*pow(sin(t),2)+4*pow(cos(t),2))
-            Vy = k*(yf-y0)+a*cos(t)*(1+2*pow(cos(t),2)-4*pow(sin(t),2))
+            Vx = k*(xf-x0)-kd*a*sin(t)*(1-2*pow(sin(t),2)+4*pow(cos(t),2))
+            Vy = k*(yf-y0)+kd*a*cos(t)*(1+2*pow(cos(t),2)-4*pow(sin(t),2))
             t += 0.002
 
             #vel_msg.linear.x = Vx
