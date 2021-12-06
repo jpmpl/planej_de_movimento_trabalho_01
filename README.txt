@@ -14,4 +14,4 @@ Os resultados serão salvos em um .csv file.
 OBS: este projeto foi desenvolvido utilizando ROS Noetic, mas não acredito que haja incompatibilidade com outras versões do ROS. Python3 foi utilizado para o desenvolvimento, pode ser que hajam incompatibilidades caso use Python.
 
 
-*** A implementação do Wave-front realizada pelo Eudes, pode ser encontrada na pasta <eudes>. Favor descompactar o .zip e seguir suas orientações.
+*** A implementação do Wave-front realizada pelo Eudes, pode ser encontrada no arquivo "trab_questao4.zip". Favor descompactar o .zip e seguir suas orientações.
