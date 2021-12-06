@@ -12,3 +12,5 @@ Para utilizá-los é preciso:
   python3 catkin_ws/src/<pacote>/scripts/<algorithm .py script>
   
 Os resultados serão salvos em um .csv file.
+
+OBS: este projeto foi desenvolvido utilizando ROS Noetic, mas não acredito que haja incompatibilidade com outras versões do ROS. Python3 foi utilizado para o desenvolvimento, pode ser que hajam incompatibilidades caso use Python.
